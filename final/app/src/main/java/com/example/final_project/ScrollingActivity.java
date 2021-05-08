@@ -29,7 +29,6 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -116,12 +115,12 @@ public class ScrollingActivity extends AppCompatActivity {
             }
         });
         //跳转到收藏夹页面
-//        (findViewById(R.id.buttonFavorite)).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(ScrollingActivity.this, FavoriteActivity.class));
-//            }
-//        });
+        (findViewById(R.id.buttonFavorite)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(ScrollingActivity.this, FavoriteActivity.class));
+            }
+        });
     }
 
     private void initMyAdapter(){

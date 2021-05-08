@@ -59,7 +59,7 @@ public class HistoryAdapter extends RecyclerView.Adapter <HistoryAdapter.History
         holder.title_h.setText(VideoList.get(position).getExtraValue());
         holder.user_h.setText(VideoList.get(position).getUserName());
         //点击跳转视频播放页
-        //todo:这里可以update历史记录数据库，实现新点击的历史记录移动到最上方||可以考虑点击button删除单条历史记录
+        //todo:这里可以考虑update历史记录数据库，实现新点击的历史记录移动到最上方
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

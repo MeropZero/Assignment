@@ -29,19 +29,20 @@ public class FavoriteUtil {
         return mFavoriteUtil;
     }
 
-    public void addFavorite(List<Video> videoList, int position) {
+    public void addFavorite(Video video) {
         SQLiteDatabase db = mFavoriteDbHelper.getWritableDatabase();
-        if (!isExist(videoList.get(position).getId())) {
+        if (!isExist(video.getId())) {
             try {
                 ContentValues values = new ContentValues();
-                values.put(MyContract.Record.ID, videoList.get(position).getId());
-                values.put(MyContract.Record.STUDENT_ID, videoList.get(position).getStudentId());
-                values.put(MyContract.Record.USER_NAME, videoList.get(position).getUserName());
-                values.put(MyContract.Record.EXTRA_VALUE, videoList.get(position).getExtraValue());
-                values.put(MyContract.Record.VIDEO_URL, videoList.get(position).getVideoUrl());
-                values.put(MyContract.Record.IMAGE_URL, videoList.get(position).getImageUrl());
-                values.put(MyContract.Record.IMAGEW, videoList.get(position).getImageW());
-                values.put(MyContract.Record.IMAGEH, videoList.get(position).getImageH());
+                values.put(MyContract.Record.ID, video.getId());
+                values.put(MyContract.Record.DATA_TIME, System.currentTimeMillis());
+                values.put(MyContract.Record.STUDENT_ID, video.getStudentId());
+                values.put(MyContract.Record.USER_NAME, video.getUserName());
+                values.put(MyContract.Record.EXTRA_VALUE, video.getExtraValue());
+                values.put(MyContract.Record.VIDEO_URL, video.getVideoUrl());
+                values.put(MyContract.Record.IMAGE_URL, video.getImageUrl());
+                values.put(MyContract.Record.IMAGEW, video.getImageW());
+                values.put(MyContract.Record.IMAGEH, video.getImageH());
                 db.insert(MyContract.Record.TABLE_FAVORITE, null, values);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -49,6 +50,7 @@ public class FavoriteUtil {
         }
     }
 
+    //查询数据库中是否已存在某视频
     public boolean isExist(String id) {
         SQLiteDatabase db = mFavoriteDbHelper.getWritableDatabase();
         Cursor cursor = db.rawQuery("select * from " + MyContract.Record.TABLE_FAVORITE + " where id = ?",
@@ -65,7 +67,8 @@ public class FavoriteUtil {
         List<Video> result = new ArrayList<>();
         Cursor cursor = null;
         try {
-            cursor = db.query(MyContract.Record.TABLE_FAVORITE, null, null, null, null, null, MyContract.Record._ID + "DESC");
+            cursor = db.query(MyContract.Record.TABLE_FAVORITE, null, null,
+                    null, null, null, MyContract.Record.DATA_TIME + " DESC");
             while (cursor.moveToNext()) {
                 String id = cursor.getString(cursor.getColumnIndex(MyContract.Record.ID));
                 String student_id = cursor.getString(cursor.getColumnIndex(MyContract.Record.STUDENT_ID));
@@ -90,10 +93,10 @@ public class FavoriteUtil {
         return result;
     }
 
-    public void deleteFavorite(List<Video> videoList, int position) {
+    public void deleteFavorite(String id) {
         SQLiteDatabase db = mFavoriteDbHelper.getWritableDatabase();
-        if (isExist(videoList.get(position).getId())){
-            db.delete(MyContract.Record.TABLE_FAVORITE, "id = " + "'" + videoList.get(position).getId() + "'", null);
+        if (isExist(id)) {
+            db.delete(MyContract.Record.TABLE_FAVORITE, "id = " + "'" + id + "'", null);
         }
     }
 

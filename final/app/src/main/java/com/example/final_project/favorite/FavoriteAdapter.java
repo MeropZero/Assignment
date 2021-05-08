@@ -13,14 +13,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.final_project.R;
+import com.example.final_project.ScrollingActivity;
 import com.example.final_project.VideoPlayer;
+import com.example.final_project.db.FavoriteUtil;
 import com.example.final_project.model.Video;
 
 import java.util.List;
 
 public class FavoriteAdapter extends RecyclerView.Adapter <FavoriteAdapter.FavoriteViewHolder> {
     private Context mContext;
-    private List<Video> VideoList;
+    private final List<Video> VideoList;
 
     public FavoriteAdapter(Context context, List<Video> videoList) {
         mContext = context;
@@ -31,18 +33,20 @@ public class FavoriteAdapter extends RecyclerView.Adapter <FavoriteAdapter.Favor
         private ImageView img_h;
         private TextView title_h;
         private TextView user_h;
+        private ImageView cancel_fav;
         public FavoriteViewHolder(@NonNull View itemView) {
             super(itemView);
             img_h = itemView.findViewById(R.id.img_h);
             title_h = itemView.findViewById(R.id.title_h);
             user_h = itemView.findViewById(R.id.user_h);
+            cancel_fav = itemView.findViewById(R.id.cancel_fav);
         }
     }
 
     @NonNull
     @Override
     public FavoriteAdapter.FavoriteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int position) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_h,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_fav,parent,false);
         FavoriteAdapter.FavoriteViewHolder holder = new FavoriteAdapter.FavoriteViewHolder(view);
         return holder;
     }
@@ -55,7 +59,6 @@ public class FavoriteAdapter extends RecyclerView.Adapter <FavoriteAdapter.Favor
         holder.title_h.setText(VideoList.get(position).getExtraValue());
         holder.user_h.setText(VideoList.get(position).getUserName());
         //点击跳转视频播放页
-        //todo:这里可以update历史记录数据库，实现新点击的历史记录移动到最上方||可以考虑点击button删除单条历史记录
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,10 +67,21 @@ public class FavoriteAdapter extends RecyclerView.Adapter <FavoriteAdapter.Favor
                 mContext.startActivity(intent);
             }
         });
+
+        holder.cancel_fav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FavoriteUtil.getInstance(ScrollingActivity.getContext()).deleteFavorite(VideoList.get(position).getId());
+                VideoList.clear();
+                VideoList.addAll(FavoriteUtil.getInstance(ScrollingActivity.getContext()).queryFavoriteList());
+                notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return VideoList.size();
     }
+
 }

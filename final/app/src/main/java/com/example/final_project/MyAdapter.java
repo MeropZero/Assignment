@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.final_project.db.HistoryUtil;
-import com.example.final_project.history.HistoryActivity;
 import com.example.final_project.model.Video;
 
 import java.util.List;

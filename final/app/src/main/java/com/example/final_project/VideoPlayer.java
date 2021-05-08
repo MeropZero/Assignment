@@ -20,13 +20,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.final_project.db.FavoriteUtil;
 import com.example.final_project.model.Love;
 import com.example.final_project.model.Video;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
-
 
 public class VideoPlayer extends AppCompatActivity implements View.OnClickListener{
     private final String TAG = "视频触控调试";
@@ -41,6 +40,7 @@ public class VideoPlayer extends AppCompatActivity implements View.OnClickListen
     private ImageView heart;
     private Video video;
     private Love love_layout;
+    private ImageView favorited;
     private boolean ismove =false;
     private boolean isPress = false;
 
@@ -79,6 +79,7 @@ public class VideoPlayer extends AppCompatActivity implements View.OnClickListen
         Intent intent = getIntent();
         video = (Video)intent.getSerializableExtra("Video");
         String video_url = video.getVideoUrl();
+        String id = video.getId();
         init_view();
 
 
@@ -87,10 +88,34 @@ public class VideoPlayer extends AppCompatActivity implements View.OnClickListen
         pd.setCancelable(false);
         pd.show();
 
+        if (FavoriteUtil.getInstance(ScrollingActivity.getContext()).isExist(id)) {
+            favorited.setVisibility(View.VISIBLE);
+        } else { favorited.setVisibility(View.GONE); }
+
         Uri videoUri = Uri.parse(video_url);
         videoView.setVideoURI(videoUri);
         videoView.requestFocus();
         videoView.getHolder().setFormat(PixelFormat.TRANSPARENT);
+
+        favorited.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //todo:收藏页面点进视频取消收藏，第一次退出返回收藏页面不会显示该收藏已取消
+                if (favorited.getVisibility() == View.VISIBLE) {
+                    FavoriteUtil.getInstance(ScrollingActivity.getContext()).deleteFavorite(id);
+                    favorited.setVisibility(View.GONE);
+                }
+            }
+        });
+        (findViewById(R.id.fav)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (favorited.getVisibility() == View.GONE) {
+                    FavoriteUtil.getInstance(ScrollingActivity.getContext()).addFavorite(video);
+                    favorited.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
@@ -155,6 +180,7 @@ public class VideoPlayer extends AppCompatActivity implements View.OnClickListen
         imageView1 = findViewById(R.id.buttonReplay);
         love_layout = findViewById(R.id.love_layout);
         heart = findViewById(R.id.love);
+        favorited = findViewById(R.id.favorited);
         TextView userId = findViewById(R.id.userId);
         TextView username = findViewById(R.id.username);
         TextView extraText = findViewById(R.id.extraValue);

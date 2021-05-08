@@ -35,6 +35,7 @@ public class HistoryUtil {
             try {
                 ContentValues values = new ContentValues();
                 values.put(MyContract.Record.ID, videoList.get(position).getId());
+                values.put(MyContract.Record.DATA_TIME, System.currentTimeMillis());
                 values.put(MyContract.Record.STUDENT_ID, videoList.get(position).getStudentId());
                 values.put(MyContract.Record.USER_NAME, videoList.get(position).getUserName());
                 values.put(MyContract.Record.EXTRA_VALUE, videoList.get(position).getExtraValue());
@@ -65,7 +66,8 @@ public class HistoryUtil {
         List<Video> result = new ArrayList<>();
         Cursor cursor = null;
         try {
-            cursor = db.query(MyContract.Record.TABLE_HISTORY, null, null, null, null, null, null);
+            cursor = db.query(MyContract.Record.TABLE_HISTORY, null, null,
+                    null, null, null, MyContract.Record.DATA_TIME + " DESC");
             while (cursor.moveToNext()) {
                 String id = cursor.getString(cursor.getColumnIndex(MyContract.Record.ID));
                 String student_id = cursor.getString(cursor.getColumnIndex(MyContract.Record.STUDENT_ID));

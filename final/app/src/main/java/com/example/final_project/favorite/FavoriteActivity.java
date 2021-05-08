@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.final_project.R;
 import com.example.final_project.ScrollingActivity;
 import com.example.final_project.db.FavoriteUtil;
-import com.example.final_project.db.HistoryUtil;
 import com.example.final_project.model.Video;
 
 import java.util.ArrayList;
@@ -37,18 +36,16 @@ public class FavoriteActivity extends AppCompatActivity {
         mRecycler.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
         favoriteAdapter.notifyDataSetChanged();
 
-        //todo:删除单个收藏
-        //清空历史记录
+        //清空收藏夹
         (findViewById(R.id.buttonClear)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HistoryUtil.getInstance(ScrollingActivity.getContext()).deleteAllHistory();
+                FavoriteUtil.getInstance(ScrollingActivity.getContext()).deleteAllFavorite();
                 getFavorite();
                 favoriteAdapter.notifyDataSetChanged();
             }
         });
         //返回上一页
-        //todo:把返回键放在上部的工具框中
         (findViewById(R.id.buttonReturn)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,7 +56,7 @@ public class FavoriteActivity extends AppCompatActivity {
 
     private void getFavorite() {
         favoriteList.clear();
-        favoriteList.addAll(HistoryUtil.getInstance(ScrollingActivity.getContext()).queryHistoryList());
+        favoriteList.addAll(FavoriteUtil.getInstance(ScrollingActivity.getContext()).queryFavoriteList());
         favoriteAdapter.notifyDataSetChanged();
     }
 }
